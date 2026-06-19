@@ -22,20 +22,10 @@ FetchContent_MakeAvailable(glm)
 add_library(glad STATIC external/glad/src/glad.c)
 target_include_directories(glad PUBLIC external/glad/include)
 
-# sources
+# sources (.cpp picked up automatically; headers listed so IDEs show them)
 file(GLOB_RECURSE SOURCES src/*.cpp)
-add_executable(${PROJECT_NAME} ${SOURCES}
-        src/Shader.h
-        src/Camera.cpp
-        src/Camera.h
-        src/Mesh.cpp
-        src/Mesh.h
-        src/Texture.cpp
-        src/Texture.h
-        src/Transform.h
-        src/Entity.h
-        src/Framebuffer.cpp
-        src/Framebuffer.h)
+file(GLOB_RECURSE HEADERS src/*.h)
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 # Single-header libraries in external/include
 target_include_directories(${PROJECT_NAME} PRIVATE external/include)

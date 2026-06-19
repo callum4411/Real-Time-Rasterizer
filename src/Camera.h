@@ -2,11 +2,6 @@
 // Created by smith on 2026-06-18.
 //
 
-#ifndef RENDERER_CAMERA_H
-#define RENDERER_CAMERA_H
-
-#endif //RENDERER_CAMERA_H
-
 #pragma once
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"

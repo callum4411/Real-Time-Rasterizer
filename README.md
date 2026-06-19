@@ -2,7 +2,7 @@
 
 A small real-time 3D renderer written from scratch in modern C++ on top of **OpenGL 3.3**. It started as a way to learn the graphics pipeline hands-on, and grew into a tidy little engine with shadow-casting lights, a multi-light Blinn–Phong shading model, an offscreen post-processing stage, and a minimal entity/transform scene system.
 
-![A spinning textured cube and an orbiting cube casting a soft shadow on a tiled floor]
+![A spinning textured cube and an orbiting cube casting a soft shadow on a tiled floor](assets/readmeImage.png)
 
 
 ## What it does

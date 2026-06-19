@@ -31,11 +31,19 @@ add_executable(${PROJECT_NAME} ${SOURCES}
         src/Mesh.cpp
         src/Mesh.h
         src/Texture.cpp
-        src/Texture.h)
+        src/Texture.h
+        src/Transform.h
+        src/Entity.h
+        src/Framebuffer.cpp
+        src/Framebuffer.h)
 
 # Single-header libraries in external/include
 target_include_directories(${PROJECT_NAME} PRIVATE external/include)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad glm::glm)
+
+# Give the program the absolute path to the assets folder as a compile-time
+# string, so loadOBJ() finds models no matter what the working directory is.
+target_compile_definitions(${PROJECT_NAME} PRIVATE ASSET_DIR="${CMAKE_SOURCE_DIR}/assets/")
 
 

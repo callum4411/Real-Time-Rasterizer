@@ -1,6 +1,6 @@
 # Renderer
 
-A small real-time 3D renderer written from scratch in modern C++ on top of **OpenGL 3.3**. It started as a way to learn the graphics pipeline hands-on, and grew into a tidy little engine with shadow-casting lights, a multi-light Blinn–Phong shading model, an offscreen post-processing stage, and a minimal entity/transform scene system.
+A small real-time 3D renderer written from scratch in modern C++ on top of **OpenGL 3.3**. It started as a way to learn the graphics pipeline hands-on, and grew into a little engine with shadow-casting lights, a multi-light Blinn–Phong shading model, an offscreen post-processing stage, and a minimal entity/transform scene system.
 
 ![A spinning textured cube and an orbiting cube casting a soft shadow on a tiled floor](assets/readmeImage.png)
 
@@ -9,9 +9,9 @@ A small real-time 3D renderer written from scratch in modern C++ on top of **Ope
 
 The renderer draws an animated scene; a spinning textured cube, a smaller cube orbiting and bobbing around it, and a tiled floor; using a three-pass pipeline:
 
-1. **Shadow pass** — the scene's depth is rendered from the sun's point of view into a 2048×2048 depth texture (the *shadow map*).
-2. **Scene pass** — the scene is shaded into an offscreen texture. Each fragment looks itself up in the shadow map to decide whether it's lit by the sun, and is also lit by three coloured point lights.
-3. **Post pass** — a single full-screen quad samples the offscreen texture through a post-processing shader, applying an optional screen-space effect before it hits the window.
+1. **Shadow pass** - the scene's depth is rendered from the sun's point of view into a 2048×2048 depth texture (the *shadow map*).
+2. **Scene pass** - the scene is shaded into an offscreen texture. Each fragment looks itself up in the shadow map to decide whether it's lit by the sun, and is also lit by three coloured point lights.
+3. **Post pass** - a single full-screen quad samples the offscreen texture through a post-processing shader, applying an optional screen-space effect before it hits the window.
 
 ### Features
 
@@ -57,7 +57,7 @@ The asset folder is baked in at compile time (`ASSET_DIR`), so the executable fi
 | File / class      | Responsibility                                                        |
 |-------------------|-----------------------------------------------------------------------|
 | `main.cpp`        | Window/context setup, all GLSL shaders, and the three-pass render loop |
-| `Camera`          | Free-fly camera — position, look direction, and the view matrix        |
+| `Camera`          | Free-fly camera - position, look direction, and the view matrix        |
 | `Mesh`            | Owns the GPU vertex buffers for one model; `loadOBJ` parses `.obj`     |
 | `Texture`         | Loads an image and owns the GPU texture handle                         |
 | `Transform`       | Position / rotation / scale → a single model matrix                    |
@@ -70,22 +70,22 @@ The GPU-resource classes (`Mesh`, `Texture`, `Framebuffer`) follow the same patt
 
 This was a from-scratch learning project, and most of the interesting parts were the things that aren't obvious until you actually wire up the pipeline yourself:
 
-- **The graphics pipeline end to end** — how vertex data flows from a buffer, through the vertex shader's model/view/projection transforms, into clip space, and out as shaded fragments.
-- **Shadow mapping** — that a shadow is really a depth comparison: render the scene's depth from the light, then in the main pass ask "is this pixel further from the light than whatever the map recorded?" Getting this right meant learning about the perspective divide, the NDC → texture-space remap, and the two classic artifacts — **shadow acne** (fixed with a slope-scaled bias) and hard, jagged edges (softened with PCF).
-- **Why lighting wants linear space** — textures are stored in sRGB, but adding light contributions only looks correct in linear space, so you convert in and out (gamma correction).
-- **Blinn–Phong** — separating ambient / diffuse / specular, and how the halfway vector and distance attenuation shape a light.
-- **Render-to-texture and framebuffer objects** — that the window is just the "default framebuffer", and you can render into your own texture instead, which is the foundation for every screen-space effect.
-- **Owning GPU resources safely in C++** — RAII for OpenGL handles, and why these classes must delete their copy constructors.
-- **Decoupling the scene from the render loop** — moving from hard-coded objects to a `vector<Entity>` with per-entity animation lambdas, so adding something to the world is just a `push_back`.
+- **The graphics pipeline end to end** - how vertex data flows from a buffer, through the vertex shader's model/view/projection transforms, into clip space, and out as shaded fragments.
+- **Shadow mapping** - that a shadow is really a depth comparison: render the scene's depth from the light, then in the main pass ask "is this pixel further from the light than whatever the map recorded?" Getting this right meant learning about the perspective divide, the NDC → texture-space remap, and the two classic artifacts - **shadow acne** (fixed with a slope-scaled bias) and hard, jagged edges (softened with PCF).
+- **Why lighting wants linear space** - textures are stored in sRGB, but adding light contributions only looks correct in linear space, so you convert in and out (gamma correction).
+- **Blinn–Phong** - separating ambient / diffuse / specular, and how the halfway vector and distance attenuation shape a light.
+- **Render-to-texture and framebuffer objects** - that the window is just the "default framebuffer", and you can render into your own texture instead, which is the foundation for every screen-space effect.
+- **Owning GPU resources safely in C++** - RAII for OpenGL handles, and why these classes must delete their copy constructors.
+- **Decoupling the scene from the render loop** - moving from hard-coded objects to a `vector<Entity>` with per-entity animation lambdas, so adding something to the world is just a `push_back`.
 
 ## Where it could go next
 
-The offscreen post-processing stage was built deliberately as groundwork — it's the natural place to add blur, bloom, FXAA, or an upscaler. Other directions: a proper material system, multiple shadow-casting lights, normal mapping, and frustum culling.
+The offscreen post-processing stage was built deliberately as groundwork - it's the natural place to add blur, bloom, FXAA, or an upscaler. Other directions: a proper material system, multiple shadow-casting lights, normal mapping, and frustum culling.
 
 ## Third-party libraries
 
-- [GLFW](https://www.glfw.org/) — windowing and input
-- [GLAD](https://glad.dav1d.de/) — OpenGL function loading
-- [GLM](https://github.com/g-truc/glm) — vector/matrix math
-- [stb_image](https://github.com/nothings/stb) — image loading
-- [tiny_obj_loader](https://github.com/tinyobjloader/tinyobjloader) — `.obj` parsing
+- [GLFW](https://www.glfw.org/) - windowing and input
+- [GLAD](https://glad.dav1d.de/) - OpenGL function loading
+- [GLM](https://github.com/g-truc/glm) - vector/matrix math
+- [stb_image](https://github.com/nothings/stb) - image loading
+- [tiny_obj_loader](https://github.com/tinyobjloader/tinyobjloader) - `.obj` parsing

@@ -26,6 +26,36 @@ void main() {
 }
 )";
 
+float lastX = 400.0f, lastY = 300.0f;   // previous mouse position (start at screen center)
+bool  firstMouse = true;                // have we gotten a mouse reading yet?
+float yaw   = -90.0f;                    // left/right angle; -90 starts you looking down -Z
+float pitch = 0.0f;                      // up/down angle
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    if (pitch >  89.0f) pitch =  89.0f;
+    if (pitch < -89.0f) pitch = -89.0f;
+    
+    // then hand `front` to your camera (see below)
+}
+
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -47,6 +77,26 @@ unsigned int compileShader(unsigned int type, const char* source) {
         std::cerr << "Shader compile failed:\n" << log << '\n';
     }
     return shader;
+}
+
+void user_input(GLFWwindow* window, Camera* Cam, float DeltaTime) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        Cam->move_forward(DeltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        Cam->move_backward(DeltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        Cam->move_left(DeltaTime);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        Cam->move_right(DeltaTime);
+    }
+    Cam->set_direction(yaw, pitch);
+
+
 }
 
 int main() {
@@ -71,6 +121,7 @@ int main() {
         glfwTerminate();
         return -1;
     }
+
 
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
@@ -154,26 +205,18 @@ int main() {
     float nowTime = 0.0f;
     float DeltaTime = 0.0f;
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
     while (!glfwWindowShouldClose(window)) {
-        view = Cam.get_lookat();
         previousTime = nowTime;
         nowTime = glfwGetTime();
         DeltaTime = nowTime - previousTime;
 
         processInput(window);
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            Cam.move_forward(DeltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            Cam.move_backward(DeltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            Cam.move_left(DeltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            Cam.move_right(DeltaTime);
-        }
+        user_input(window, &Cam, DeltaTime);
+        view = Cam.get_lookat();
 
 
         // (D) clear BOTH color and depth each frame

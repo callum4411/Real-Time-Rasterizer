@@ -13,6 +13,7 @@
 
 class Camera {
 public:
+    void set_direction(float yaw, float pitch);
     void move_forward(float DeltaTime);
     void move_backward(float DeltaTime);
     void move_left(float DeltaTime);
@@ -22,7 +23,7 @@ public:
 
     float speed;
     glm::vec3 up;
-    glm::vec3 center;
+    glm::vec3 front;
     glm::vec3 eye;
     Camera();
 };
